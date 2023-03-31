@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>DVD Screensaver</title>
+	<style>
+		body {
+			margin: 0;
+			box-sizing: border-box;
+			overflow: hidden;
+		}
+
+		#black {
+			height: 100vh;
+			width: 100vw;
+			background-color: #111;
+		}
+
+		#dvd {
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 10vw;
+			aspect-ratio: 2/1; /* Set to the aspect ratio of the image (100px x 50px) */
+			background-image: url("https://i.imgur.com/oMDcxip.jpeg");
+			-webkit-mask: url("https://i.imgur.com/oMDcxip.jpeg");
+			background-repeat: no-repeat;
+			background-size: contain;
+			background-position: center;
+		}
+	</style>
+</head>
+<body>
+	<div id="black">
+  		<div id="dvd"></div>
+	</div>
+
+	<script>
+		let x = 0,
+	  		y = 0,
+	  		dirX = 1,
+	  		dirY = 1;
+		const speed = 2;
+		const pallete = ["#ff8800", "#e124ff", "#6a19ff", "#ff2188"];
+		let dvd = document.getElementById("dvd");
+		dvd.style.backgroundColor = pallete[0];
+		let prevColorChoiceIndex = 0;
+		let black = document.getElementById("black");
+		const dvdWidth = dvd.clientWidth;
+		const dvdHeight = dvd.clientHeight;
+
+		function getNewRandomColor() {
+		  const currentPallete = [...pallete]
+		  currentPallete.splice(prevColorChoiceIndex,1)
+		  const colorChoiceIndex = Math.floor(Math.random() * currentPallete.length);
+		  prevColorChoiceIndex = colorChoiceIndex<prevColorChoiceIndex?colorChoiceIndex:colorChoiceIndex+1;
+		  const colorChoice = currentPallete[colorChoiceIndex];
+		  return colorChoice;
+		}
+
+		function animate() {
+			const screenHeight = window.innerHeight;
+			const screenWidth = window.innerWidth;
+
+			if (y + dvdHeight >= screenHeight || y < 0) {
+				dirY *= -1;
+				dvd.style.backgroundColor = getNewRandomColor();
+			}
+			if (x + dvdWidth >= screenWidth || x < 0) {
+				dirX *= -1;
+
+				dvd.style.backgroundColor = getNewRandomColor();
+			}
+			x += dirX * speed;
+			y += dirY * speed;
+			dvd.style.left = x + "px";
+			dvd.style.top = y + "px";
+			window.requestAnimationFrame(animate);
+		}
+
+		window.requestAnimationFrame(animate);
+	</script>
+</body>
+</html>
